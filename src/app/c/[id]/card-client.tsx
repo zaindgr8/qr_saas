@@ -20,7 +20,8 @@ import {
   Building,
   Sparkles,
   ExternalLink,
-  Smartphone
+  Smartphone,
+  Zap
 } from 'lucide-react';
 import { TwitterIcon, LinkedInIcon, InstagramIcon, GithubIcon, WhatsAppIcon } from '@/components/icons';
 
@@ -43,7 +44,7 @@ export default function PublicCardClient({ card }: Props) {
     if (typeof window !== 'undefined') {
       const currentUrl = window.location.href;
       generateQRDataUrl(currentUrl, {
-        foreground: card.qrForeground || '#0f172a',
+        foreground: card.qrForeground || '#07070b',
         background: '#ffffff',
         width: 380,
         centerIcon: 'phone',
@@ -74,8 +75,8 @@ export default function PublicCardClient({ card }: Props) {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `${fullName} - Contact Card`,
-          text: `Save ${fullName}'s contact number and details directly to your phone.`,
+          title: `${fullName} - Contact Card | AI Founder Hub`,
+          text: `Save ${fullName}'s contact number and details directly to your phone. Powered by AI Founder Hub.`,
           url: window.location.href,
         });
       } catch {
@@ -91,15 +92,15 @@ export default function PublicCardClient({ card }: Props) {
       {/* Background ambient lighting */}
       <div 
         className="ambient-glow" 
-        style={{ background: `radial-gradient(circle, ${card.themeColor || '#6366f1'}33 0%, rgba(15,23,42,0) 70%)` }} 
+        style={{ background: `radial-gradient(circle, ${card.themeColor || '#ccf244'}26 0%, rgba(7,7,11,0) 70%)` }} 
       />
 
       <main className="public-card-wrapper">
         {/* Card Header & Profile Banner */}
-        <div className="card-hero" style={{ borderColor: `${card.themeColor || '#6366f1'}44` }}>
+        <div className="card-hero" style={{ borderColor: `${card.themeColor || '#ccf244'}44` }}>
           <div className="hero-top-actions">
             <span className="badge-verified">
-              <Sparkles size={13} /> Verified Card
+              <Zap size={13} fill="#ccf244" /> AI Founder Hub Verified
             </span>
             <div className="action-buttons-group">
               <button 
@@ -129,14 +130,14 @@ export default function PublicCardClient({ card }: Props) {
                 src={card.avatarUrl} 
                 alt={fullName} 
                 className="avatar-img" 
-                style={{ borderColor: card.themeColor || '#6366f1' }}
+                style={{ borderColor: card.themeColor || '#ccf244' }}
               />
             ) : (
               <div 
                 className="avatar-fallback" 
-                style={{ background: `linear-gradient(135deg, ${card.themeColor || '#6366f1'}, #0f172a)` }}
+                style={{ background: card.themeColor || '#ccf244' }}
               >
-                <span>{card.firstName?.[0] || 'C'}{card.lastName?.[0] || ''}</span>
+                <span>{card.firstName?.[0] || 'A'}{card.lastName?.[0] || 'I'}</span>
               </div>
             )}
           </div>
@@ -162,15 +163,16 @@ export default function PublicCardClient({ card }: Props) {
               onClick={handleSaveContact} 
               className="save-contact-btn"
               style={{
-                background: `linear-gradient(135deg, ${card.themeColor || '#6366f1'}, #4338ca)`,
-                boxShadow: `0 8px 24px -4px ${card.themeColor || '#6366f1'}66`
+                background: card.themeColor || '#ccf244',
+                color: '#07070b',
+                boxShadow: `0 8px 24px -4px ${(card.themeColor || '#ccf244')}66`
               }}
               disabled={isSaving}
             >
               <UserPlus size={20} className="cta-icon" />
               <div className="cta-text-wrapper">
                 <span className="cta-title">Save to Phone Contacts</span>
-                <span className="cta-subtitle">Auto-adds number, email & social</span>
+                <span className="cta-subtitle">Auto-adds number, email &amp; social profiles</span>
               </div>
             </button>
             <p className="cta-hint">
@@ -309,7 +311,7 @@ export default function PublicCardClient({ card }: Props) {
         {/* SOCIAL & WEB PROFILES */}
         {(card.linkedin || card.twitter || card.instagram || card.github || card.calendly || card.telegram || card.website) && (
           <div className="card-section">
-            <h2 className="section-heading">Social & Digital Links</h2>
+            <h2 className="section-heading">Social &amp; Digital Links</h2>
             <div className="social-grid">
               {card.linkedin && (
                 <a 
@@ -402,10 +404,24 @@ export default function PublicCardClient({ card }: Props) {
           </div>
         )}
 
-        {/* FOOTER */}
+        {/* FOOTER: POWERED BY AI FOUNDER HUB */}
         <footer className="public-card-footer">
-          <p>Created with <strong>QuickContact QR SaaS</strong></p>
-          <a href="/" className="footer-link">Create Your Own QR Contact Card →</a>
+          <a 
+            href="https://aifounderhub.com" 
+            target="_blank" 
+            rel="noreferrer" 
+            className="powered-by-banner"
+          >
+            <Zap size={13} fill="#ccf244" />
+            <span>POWERED BY AI FOUNDER HUB</span>
+            <ExternalLink size={12} />
+          </a>
+          <p style={{ marginTop: '0.2rem', fontSize: '0.78rem' }}>
+            The community where AI builders are made • <a href="https://aifounderhub.com" target="_blank" rel="noreferrer" className="footer-link">aifounderhub.com</a>
+          </p>
+          <a href="/" className="footer-link" style={{ fontSize: '0.74rem', color: 'var(--text-subtle)' }}>
+            Create Your Own Contact QR Card →
+          </a>
         </footer>
       </main>
 

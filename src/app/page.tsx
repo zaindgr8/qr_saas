@@ -30,7 +30,8 @@ import {
   CheckCircle2,
   RefreshCw,
   PlusCircle,
-  FolderOpen
+  FolderOpen,
+  Zap
 } from 'lucide-react';
 
 const AVATAR_PRESETS = [
@@ -41,14 +42,15 @@ const AVATAR_PRESETS = [
   'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&auto=format&fit=crop&q=80',
 ];
 
+// AI Founder Hub Curated Palette
 const THEME_COLORS = [
-  '#6366f1', // Indigo
-  '#0ea5e9', // Sky Blue
-  '#10b981', // Emerald
-  '#8b5cf6', // Purple
-  '#f43f5e', // Rose
-  '#f59e0b', // Amber
-  '#0f172a', // Midnight Slate
+  '#ccf244', // AI Founder Hub Signature Electric Lime
+  '#b5a1ff', // Cyber Lavender
+  '#38bdf8', // Cyber Cyan
+  '#22c55e', // Emerald
+  '#febc2e', // Warm Gold
+  '#f43f5e', // Neon Rose
+  '#ffffff', // Pure White
 ];
 
 export default function SaaSStudioPage() {
@@ -103,18 +105,15 @@ export default function SaaSStudioPage() {
 
       let qrPayload = '';
       if (currentProfile.qrMode === 'vcard') {
-        // Mode 1: Direct vCard 3.0 string. When phone camera scans it,
-        // it triggers native "Add to Contacts" with phone number and details!
         qrPayload = generateVCard(currentProfile);
       } else {
-        // Mode 2: Dynamic hosted web page
-        const origin = typeof window !== 'undefined' ? window.location.origin : 'https://quickcontact.app';
+        const origin = typeof window !== 'undefined' ? window.location.origin : 'https://aifounderhub.com';
         qrPayload = `${origin}/c/${currentProfile.id}`;
       }
 
       try {
         const url = await generateQRDataUrl(qrPayload, {
-          foreground: currentProfile.qrForeground || '#0f172a',
+          foreground: currentProfile.qrForeground || '#07070b',
           background: currentProfile.qrBackground || '#ffffff',
           width: 600,
           centerIcon: currentProfile.qrCenterIcon,
@@ -165,7 +164,7 @@ export default function SaaSStudioPage() {
     const newCard: ContactProfile = {
       ...DEFAULT_NEW_PROFILE,
       id: newId,
-      cardName: 'Untitled Contact Card',
+      cardName: 'Untitled Founder Card',
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
@@ -190,12 +189,13 @@ export default function SaaSStudioPage() {
       });
 
       confetti({
-        particleCount: 80,
-        spread: 70,
+        particleCount: 90,
+        spread: 80,
+        colors: ['#ccf244', '#b5a1ff', '#ffffff', '#22c55e'],
         origin: { y: 0.6 },
       });
 
-      showToast('Contact card & QR code saved successfully!');
+      showToast('Contact card & QR saved to Supabase successfully!');
     } catch {
       showToast('Card saved locally');
     } finally {
@@ -208,7 +208,7 @@ export default function SaaSStudioPage() {
       const link = document.createElement('a');
       const filename = [currentProfile.firstName, currentProfile.lastName].filter(Boolean).join('_') || 'contact';
       link.href = qrDataUrl;
-      link.download = `${filename}_contact_qr.png`;
+      link.download = `${filename}_aifounderhub_qr.png`;
       link.click();
       showToast('QR Code (PNG) downloaded!');
     } else if (format === 'svg') {
@@ -225,7 +225,7 @@ export default function SaaSStudioPage() {
         const link = document.createElement('a');
         const filename = [currentProfile.firstName, currentProfile.lastName].filter(Boolean).join('_') || 'contact';
         link.href = url;
-        link.download = `${filename}_contact_qr.svg`;
+        link.download = `${filename}_aifounderhub_qr.svg`;
         link.click();
         URL.revokeObjectURL(url);
         showToast('Vector QR Code (SVG) downloaded!');
@@ -251,22 +251,33 @@ export default function SaaSStudioPage() {
       {/* Ambient background glow */}
       <div 
         className="ambient-glow" 
-        style={{ background: `radial-gradient(circle, ${currentProfile.themeColor || '#6366f1'}33 0%, rgba(15,23,42,0) 70%)` }} 
+        style={{ background: `radial-gradient(circle, ${currentProfile.themeColor || '#ccf244'}20 0%, rgba(7,7,11,0) 70%)` }} 
       />
 
-      {/* TOP SAAS NAVIGATION */}
+      {/* TOP AI FOUNDER HUB NAVIGATION */}
       <header className="app-header">
         <div className="header-container">
           <div className="brand-wrapper">
             <div className="brand-icon-box">
-              <QrCode size={24} />
+              {/* AI Founder Hub Lightning Bolt Logo */}
+              <svg viewBox="0 0 24 24" fill="#07070b" width="22" height="22">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+              </svg>
             </div>
             <div>
               <div className="brand-title">
-                QuickContact <span className="brand-badge">SaaS</span>
+                AI Founder Hub <span className="brand-badge">QR Studio</span>
               </div>
               <div className="brand-subtitle">
-                QR Contact Auto-Save Engine for iOS &amp; Android
+                Powered by{' '}
+                <a 
+                  href="https://aifounderhub.com" 
+                  target="_blank" 
+                  rel="noreferrer" 
+                  className="brand-link-hub"
+                >
+                  AI Founder Hub ↗
+                </a>
               </div>
             </div>
           </div>
@@ -296,12 +307,12 @@ export default function SaaSStudioPage() {
         <section className="studio-card">
           <div className="section-top-bar">
             <h1 className="panel-title">
-              <User size={22} /> Contact &amp; QR Generator Studio
+              <Zap size={22} fill="#ccf244" color="#ccf244" /> AI Founder Contact &amp; QR Studio
             </h1>
 
             {/* Template Quick Presets */}
             <div className="template-selector-wrap">
-              <span style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>Load Preset:</span>
+              <span style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>Presets:</span>
               {SAMPLE_PROFILES.map((tpl) => (
                 <button
                   key={tpl.id}
@@ -323,7 +334,7 @@ export default function SaaSStudioPage() {
               onClick={() => setActiveTab('details')}
               className={`tab-btn ${activeTab === 'details' ? 'active' : ''}`}
             >
-              <User size={16} /> Identity &amp; Name
+              <User size={16} /> Identity &amp; Role
             </button>
             <button
               onClick={() => setActiveTab('reach')}
@@ -335,7 +346,7 @@ export default function SaaSStudioPage() {
               onClick={() => setActiveTab('social')}
               className={`tab-btn ${activeTab === 'social' ? 'active' : ''}`}
             >
-              <Globe size={16} /> Social &amp; Web
+              <Globe size={16} /> Social &amp; Links
             </button>
             <button
               onClick={() => setActiveTab('styling')}
@@ -351,7 +362,7 @@ export default function SaaSStudioPage() {
             </button>
           </nav>
 
-          {/* TAB 1: IDENTITY & NAME */}
+          {/* TAB 1: IDENTITY & ROLE */}
           {activeTab === 'details' && (
             <div className="form-grid">
               <div className="form-group">
@@ -361,7 +372,7 @@ export default function SaaSStudioPage() {
                     id="first-name"
                     type="text"
                     className="text-input no-icon"
-                    placeholder="e.g. Sarah"
+                    placeholder="e.g. Alex"
                     value={currentProfile.firstName}
                     onChange={(e) => handleFieldChange('firstName', e.target.value)}
                   />
@@ -375,7 +386,7 @@ export default function SaaSStudioPage() {
                     id="last-name"
                     type="text"
                     className="text-input no-icon"
-                    placeholder="e.g. Jenkins"
+                    placeholder="e.g. Rivers"
                     value={currentProfile.lastName}
                     onChange={(e) => handleFieldChange('lastName', e.target.value)}
                   />
@@ -389,7 +400,7 @@ export default function SaaSStudioPage() {
                     id="prefix"
                     type="text"
                     className="text-input no-icon"
-                    placeholder="e.g. Dr. / Prof. / Eng."
+                    placeholder="e.g. Dr. / Founder / Eng."
                     value={currentProfile.prefix || ''}
                     onChange={(e) => handleFieldChange('prefix', e.target.value)}
                   />
@@ -403,7 +414,7 @@ export default function SaaSStudioPage() {
                     id="job-title"
                     type="text"
                     className="text-input"
-                    placeholder="e.g. Chief Technology Officer"
+                    placeholder="e.g. Founder & AI Systems Lead"
                     value={currentProfile.title}
                     onChange={(e) => handleFieldChange('title', e.target.value)}
                   />
@@ -412,13 +423,13 @@ export default function SaaSStudioPage() {
               </div>
 
               <div className="form-group">
-                <label className="form-label" htmlFor="company">Company / Organization</label>
+                <label className="form-label" htmlFor="company">Company / Agency</label>
                 <div className="input-icon-wrap">
                   <input
                     id="company"
                     type="text"
                     className="text-input"
-                    placeholder="e.g. Acme Innovations"
+                    placeholder="e.g. AI Founder Hub / Acme AI"
                     value={currentProfile.company}
                     onChange={(e) => handleFieldChange('company', e.target.value)}
                   />
@@ -427,13 +438,13 @@ export default function SaaSStudioPage() {
               </div>
 
               <div className="form-group">
-                <label className="form-label" htmlFor="department">Department</label>
+                <label className="form-label" htmlFor="department">Department / Track</label>
                 <div className="input-icon-wrap">
                   <input
                     id="department"
                     type="text"
                     className="text-input no-icon"
-                    placeholder="e.g. Engineering & AI"
+                    placeholder="e.g. AAA Accelerator / Voice AI"
                     value={currentProfile.department || ''}
                     onChange={(e) => handleFieldChange('department', e.target.value)}
                   />
@@ -446,7 +457,7 @@ export default function SaaSStudioPage() {
                   id="headline"
                   className="text-textarea"
                   rows={2}
-                  placeholder="e.g. Scaling enterprise software & cloud infrastructure. Let's connect!"
+                  placeholder="e.g. Building and deploying autonomous AI lead management systems and voice agents ⚡️"
                   value={currentProfile.headline || ''}
                   onChange={(e) => handleFieldChange('headline', e.target.value)}
                 />
@@ -490,8 +501,8 @@ export default function SaaSStudioPage() {
             <div className="form-grid">
               <div className="form-group form-full">
                 <div style={{
-                  background: 'rgba(56, 189, 248, 0.1)',
-                  border: '1px solid rgba(56, 189, 248, 0.25)',
+                  background: 'rgba(204, 242, 68, 0.08)',
+                  border: '1px solid rgba(204, 242, 68, 0.25)',
                   borderRadius: 'var(--radius-md)',
                   padding: '0.85rem 1rem',
                   display: 'flex',
@@ -499,11 +510,11 @@ export default function SaaSStudioPage() {
                   gap: '0.75rem',
                   marginBottom: '0.5rem'
                 }}>
-                  <Phone size={22} style={{ color: '#38bdf8', flexShrink: 0 }} />
+                  <Phone size={22} style={{ color: '#ccf244', flexShrink: 0 }} />
                   <div>
-                    <strong style={{ color: '#e0f2fe', fontSize: '0.88rem' }}>Primary Mobile Phone Number</strong>
-                    <p style={{ color: '#94a3b8', fontSize: '0.78rem' }}>
-                      This is the main number that automatically gets saved into the scanner’s phone contacts when the QR code is scanned.
+                    <strong style={{ color: '#ccf244', fontSize: '0.88rem' }}>Primary Mobile Phone Number</strong>
+                    <p style={{ color: '#a1a1aa', fontSize: '0.78rem' }}>
+                      This is the target number that automatically gets saved into the phone contacts when the QR code is scanned.
                     </p>
                   </div>
                 </div>
@@ -519,13 +530,13 @@ export default function SaaSStudioPage() {
                     id="phone"
                     type="tel"
                     className="text-input"
-                    placeholder="+1 (555) 234-5678"
+                    placeholder="+1 (555) 349-8201"
                     value={currentProfile.phone}
                     onChange={(e) => handleFieldChange('phone', e.target.value)}
                   />
                   <Phone size={16} className="field-icon" />
                 </div>
-                <span className="form-tip">Include country code (+1, +44, +971, etc.)</span>
+                <span className="form-tip">Include country code (+1, +971, +44, etc.)</span>
               </div>
 
               <div className="form-group">
@@ -535,7 +546,7 @@ export default function SaaSStudioPage() {
                     id="work-phone"
                     type="tel"
                     className="text-input"
-                    placeholder="+1 (555) 800-1122"
+                    placeholder="+971 4 399 2200"
                     value={currentProfile.workPhone || ''}
                     onChange={(e) => handleFieldChange('workPhone', e.target.value)}
                   />
@@ -550,7 +561,7 @@ export default function SaaSStudioPage() {
                     id="whatsapp"
                     type="tel"
                     className="text-input"
-                    placeholder="+15552345678 (no spaces)"
+                    placeholder="+15553498201 (no spaces)"
                     value={currentProfile.whatsapp || ''}
                     onChange={(e) => handleFieldChange('whatsapp', e.target.value)}
                   />
@@ -568,7 +579,7 @@ export default function SaaSStudioPage() {
                     id="email"
                     type="email"
                     className="text-input"
-                    placeholder="sarah@example.com"
+                    placeholder="alex@aifounderhub.com"
                     value={currentProfile.email}
                     onChange={(e) => handleFieldChange('email', e.target.value)}
                   />
@@ -583,7 +594,7 @@ export default function SaaSStudioPage() {
                     id="work-email"
                     type="email"
                     className="text-input"
-                    placeholder="sarah.j@company.com"
+                    placeholder="founders@aifounderhub.com"
                     value={currentProfile.workEmail || ''}
                     onChange={(e) => handleFieldChange('workEmail', e.target.value)}
                   />
@@ -592,18 +603,18 @@ export default function SaaSStudioPage() {
               </div>
 
               <div className="form-group">
-                <label className="form-label" htmlFor="city">City &amp; State</label>
+                <label className="form-label" htmlFor="city">City &amp; Country</label>
                 <div className="input-icon-wrap">
                   <input
                     id="city"
                     type="text"
                     className="text-input"
-                    placeholder="San Francisco, CA"
-                    value={[currentProfile.city, currentProfile.state].filter(Boolean).join(', ')}
+                    placeholder="Dubai, UAE"
+                    value={[currentProfile.city, currentProfile.country].filter(Boolean).join(', ')}
                     onChange={(e) => {
                       const parts = e.target.value.split(',');
                       handleFieldChange('city', parts[0]?.trim() || '');
-                      handleFieldChange('state', parts[1]?.trim() || '');
+                      handleFieldChange('country', parts[1]?.trim() || '');
                     }}
                   />
                   <MapPin size={16} className="field-icon" />
@@ -616,7 +627,7 @@ export default function SaaSStudioPage() {
                   id="note"
                   className="text-textarea"
                   rows={2}
-                  placeholder="e.g. Met at Web Summit 2026. Reach out for design and engineering consultation."
+                  placeholder="e.g. Connected via AI Founder Hub (aifounderhub.com). Reach out regarding AI agency builds and partnerships."
                   value={currentProfile.note || ''}
                   onChange={(e) => handleFieldChange('note', e.target.value)}
                 />
@@ -624,13 +635,13 @@ export default function SaaSStudioPage() {
             </div>
           )}
 
-          {/* TAB 3: SOCIAL & WEB */}
+          {/* TAB 3: SOCIAL & LINKS */}
           {activeTab === 'social' && (
             <div className="form-grid">
               <div className="form-group">
                 <label className="form-label" htmlFor="linkedin">
                   LinkedIn Profile
-                  <span className="label-tag">Popular</span>
+                  <span className="label-tag">Essential</span>
                 </label>
                 <div className="input-icon-wrap">
                   <input
@@ -648,13 +659,13 @@ export default function SaaSStudioPage() {
               </div>
 
               <div className="form-group">
-                <label className="form-label" htmlFor="website">Website / Portfolio</label>
+                <label className="form-label" htmlFor="website">Website / AI Agency</label>
                 <div className="input-icon-wrap">
                   <input
                     id="website"
                     type="text"
                     className="text-input"
-                    placeholder="https://yoursite.com"
+                    placeholder="https://aifounderhub.com"
                     value={currentProfile.website || ''}
                     onChange={(e) => handleFieldChange('website', e.target.value)}
                   />
@@ -686,7 +697,7 @@ export default function SaaSStudioPage() {
                     id="instagram"
                     type="text"
                     className="text-input"
-                    placeholder="@instagram_handle"
+                    placeholder="@handle"
                     value={currentProfile.instagram || ''}
                     onChange={(e) => handleFieldChange('instagram', e.target.value)}
                   />
@@ -714,7 +725,7 @@ export default function SaaSStudioPage() {
               </div>
 
               <div className="form-group">
-                <label className="form-label" htmlFor="calendly">Calendly / Meeting Link</label>
+                <label className="form-label" htmlFor="calendly">Calendly / Booking Link</label>
                 <div className="input-icon-wrap">
                   <input
                     id="calendly"
@@ -752,7 +763,7 @@ export default function SaaSStudioPage() {
               <div className="form-group">
                 <label className="form-label">
                   Scanning Action Mode
-                  <span className="label-tag">Crucial</span>
+                  <span className="label-tag">Essential</span>
                 </label>
                 <div className="qr-mode-options">
                   <button
@@ -791,7 +802,7 @@ export default function SaaSStudioPage() {
 
               {/* THEME COLOR */}
               <div className="form-group">
-                <label className="form-label">Digital Card Accent Color</label>
+                <label className="form-label">Digital Card Accent Color (AI Founder Hub Palette)</label>
                 <div className="swatches-row">
                   {THEME_COLORS.map((c) => (
                     <button
@@ -805,7 +816,7 @@ export default function SaaSStudioPage() {
                   ))}
                   <input
                     type="color"
-                    value={currentProfile.themeColor || '#6366f1'}
+                    value={currentProfile.themeColor || '#ccf244'}
                     onChange={(e) => handleFieldChange('themeColor', e.target.value)}
                     style={{ width: '32px', height: '32px', border: 'none', background: 'none', cursor: 'pointer' }}
                     title="Custom color"
@@ -817,7 +828,7 @@ export default function SaaSStudioPage() {
               <div className="form-group">
                 <label className="form-label">QR Code Foreground Color</label>
                 <div className="swatches-row">
-                  {['#0f172a', '#1e1b4b', '#0369a1', '#064e3b', '#4c0519', '#312e81'].map((c) => (
+                  {['#07070b', '#141420', '#1e1e2a', '#2a2a38', '#0369a1', '#71930b'].map((c) => (
                     <button
                       key={c}
                       type="button"
@@ -829,7 +840,7 @@ export default function SaaSStudioPage() {
                   ))}
                   <input
                     type="color"
-                    value={currentProfile.qrForeground || '#0f172a'}
+                    value={currentProfile.qrForeground || '#07070b'}
                     onChange={(e) => handleFieldChange('qrForeground', e.target.value)}
                     style={{ width: '32px', height: '32px', border: 'none', background: 'none', cursor: 'pointer' }}
                     title="Custom QR color"
@@ -865,7 +876,7 @@ export default function SaaSStudioPage() {
           {activeTab === 'saved' && (
             <div className="form-grid single-col">
               <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                Manage all your generated QR contact cards. Switch between business, personal, and networking event cards.
+                All generated QR contact cards are synced with your Supabase database.
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
                 {profiles.map((p) => (
@@ -876,13 +887,15 @@ export default function SaaSStudioPage() {
                       alignItems: 'center',
                       justifyContent: 'space-between',
                       padding: '0.85rem 1rem',
-                      background: p.id === currentProfile.id ? 'rgba(99, 102, 241, 0.15)' : 'var(--bg-surface-elevated)',
-                      border: `1px solid ${p.id === currentProfile.id ? 'var(--accent-indigo)' : 'var(--border-subtle)'}`,
+                      background: p.id === currentProfile.id ? 'rgba(204, 242, 68, 0.12)' : 'var(--bg-surface-elevated)',
+                      border: `1px solid ${p.id === currentProfile.id ? '#ccf244' : 'var(--border-subtle)'}`,
                       borderRadius: 'var(--radius-md)',
                     }}
                   >
                     <div>
-                      <strong style={{ fontSize: '0.92rem' }}>{p.cardName || `${p.firstName} ${p.lastName}`}</strong>
+                      <strong style={{ fontSize: '0.92rem', color: p.id === currentProfile.id ? '#ccf244' : '#f4f1e8' }}>
+                        {p.cardName || `${p.firstName} ${p.lastName}`}
+                      </strong>
                       <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
                         {p.phone || 'No phone'} • {p.email || 'No email'} • {p.qrMode === 'vcard' ? 'Direct Camera Save' : 'Smart Web Card'}
                       </div>
@@ -912,7 +925,7 @@ export default function SaaSStudioPage() {
                 className="btn-primary-action"
                 disabled={isSaving}
               >
-                <CheckCircle2 size={18} /> {isSaving ? 'Saving...' : 'Save & Update Card'}
+                <CheckCircle2 size={18} /> {isSaving ? 'Saving to Supabase...' : 'Save & Sync Card'}
               </button>
               <button
                 onClick={() => setShowPrintModal(true)}
@@ -941,7 +954,7 @@ export default function SaaSStudioPage() {
           {/* THE MASTER QR CODE CARD */}
           <div className="qr-master-card" ref={qrRef}>
             <div className="scan-prompt-banner">
-              <Sparkles size={14} />
+              <Zap size={13} fill="#ccf244" />
               <span>
                 {currentProfile.qrMode === 'vcard' 
                   ? 'Scan with iPhone or Android Camera to Auto-Save' 
@@ -955,7 +968,7 @@ export default function SaaSStudioPage() {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={qrDataUrl} alt={`QR Code for ${fullName}`} />
               ) : (
-                <div style={{ color: '#0f172a', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{ color: '#07070b', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <RefreshCw size={18} className="animate-spin" /> Generating QR...
                 </div>
               )}
@@ -967,7 +980,7 @@ export default function SaaSStudioPage() {
                 {currentProfile.phone || '+1 (555) 000-0000'}
               </div>
               <div className="target-badge">
-                <Check size={13} style={{ color: '#10b981' }} />
+                <Check size={13} style={{ color: '#ccf244' }} />
                 <span>Number saved to phone when scanned</span>
               </div>
             </div>
@@ -1034,7 +1047,7 @@ export default function SaaSStudioPage() {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={currentProfile.avatarUrl} alt={fullName} />
                   ) : (
-                    <span>{currentProfile.firstName?.[0] || 'C'}{currentProfile.lastName?.[0] || ''}</span>
+                    <span>{currentProfile.firstName?.[0] || 'A'}{currentProfile.lastName?.[0] || 'I'}</span>
                   )}
                 </div>
 
@@ -1081,7 +1094,7 @@ export default function SaaSStudioPage() {
 
                 <div className="ios-save-banner">
                   <CheckCircle2 size={15} />
-                  <span>Automatically prompted on phone scan!</span>
+                  <span>Prompted automatically on camera scan!</span>
                 </div>
               </div>
             )}
@@ -1108,8 +1121,8 @@ export default function SaaSStudioPage() {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={currentProfile.avatarUrl} alt={fullName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
-                    <div style={{ width: '100%', height: '100%', background: currentProfile.themeColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}>
-                      {currentProfile.firstName?.[0] || 'C'}
+                    <div style={{ width: '100%', height: '100%', background: currentProfile.themeColor, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#07070b', fontWeight: 'bold' }}>
+                      {currentProfile.firstName?.[0] || 'A'}
                     </div>
                   )}
                 </div>
@@ -1135,10 +1148,45 @@ export default function SaaSStudioPage() {
         </aside>
       </div>
 
+      {/* FOOTER: POWERED BY AI FOUNDER HUB */}
+      <footer style={{
+        textAlign: 'center',
+        padding: '2.5rem 1rem 3rem',
+        borderTop: '1px solid var(--border-subtle)',
+        marginTop: '2rem',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '0.65rem',
+        position: 'relative',
+        zIndex: 1
+      }}>
+        <a 
+          href="https://aifounderhub.com" 
+          target="_blank" 
+          rel="noreferrer" 
+          className="powered-by-banner"
+        >
+          <Zap size={14} fill="#ccf244" />
+          <span>POWERED BY AI FOUNDER HUB</span>
+          <ExternalLink size={13} />
+        </a>
+        <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', maxWidth: '500px' }}>
+          The community where AI builders are made. Build and sell AI automation systems, voice agents, and lead management engines.
+        </p>
+        <div style={{ display: 'flex', gap: '1.25rem', fontSize: '0.78rem', color: 'var(--text-subtle)' }}>
+          <a href="https://aifounderhub.com" target="_blank" rel="noreferrer" className="footer-link">aifounderhub.com</a>
+          <span>•</span>
+          <a href="https://aifounderhub.com/#membership" target="_blank" rel="noreferrer" className="footer-link">Courses &amp; Membership</a>
+          <span>•</span>
+          <a href="https://aifounderhub.com/#bootcamp" target="_blank" rel="noreferrer" className="footer-link">AI Builder Bootcamp</a>
+        </div>
+      </footer>
+
       {/* TOAST NOTIFICATION */}
       {toastMessage && (
         <div className="toast-notice">
-          <Sparkles size={18} style={{ color: '#10b981' }} />
+          <Zap size={18} fill="#ccf244" style={{ color: '#ccf244' }} />
           <span>{toastMessage}</span>
         </div>
       )}
@@ -1148,30 +1196,30 @@ export default function SaaSStudioPage() {
         <div className="modal-backdrop" onClick={() => setShowTestModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '520px', textAlign: 'left' }}>
             <h3 className="modal-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Smartphone size={22} style={{ color: 'var(--accent-indigo)' }} />
+              <Smartphone size={22} style={{ color: '#ccf244' }} />
               How Mobile Phone Auto-Save Works
             </h3>
             <p className="modal-subtitle">
-              QuickContact uses standard RFC vCard 3.0 protocols that native phone operating systems recognize instantly.
+              AI Founder Hub QR uses standard RFC vCard 3.0 protocols that native phone operating systems recognize instantly.
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', margin: '1rem 0' }}>
               <div style={{ background: 'var(--bg-surface-elevated)', padding: '0.85rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
-                <strong style={{ color: '#38bdf8', fontSize: '0.9rem' }}>📱 Apple iOS (iPhone &amp; iPad):</strong>
+                <strong style={{ color: '#ccf244', fontSize: '0.9rem' }}>📱 Apple iOS (iPhone &amp; iPad):</strong>
                 <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '4px' }}>
                   Open the built-in iOS <strong>Camera</strong> app and point it at the QR code. A yellow banner pops up: <em>&quot;Add to Contacts&quot;</em>. Tapping it opens the pre-filled contact card with one-touch <strong>Create New Contact</strong>!
                 </p>
               </div>
 
               <div style={{ background: 'var(--bg-surface-elevated)', padding: '0.85rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
-                <strong style={{ color: '#34d399', fontSize: '0.9rem' }}>🤖 Android (Google Lens / Samsung Camera):</strong>
+                <strong style={{ color: '#38bdf8', fontSize: '0.9rem' }}>🤖 Android (Google Lens / Samsung Camera):</strong>
                 <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '4px' }}>
                   Point your camera or Google Lens at the QR code. Android recognizes the contact record and displays <em>&quot;Save Contact&quot;</em> or opens Google Contacts directly.
                 </p>
               </div>
 
               <div style={{ background: 'var(--bg-surface-elevated)', padding: '0.85rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-subtle)' }}>
-                <strong style={{ color: '#a78bfa', fontSize: '0.9rem' }}>⚡️ Offline vs Hosted Mode:</strong>
+                <strong style={{ color: '#b5a1ff', fontSize: '0.9rem' }}>⚡️ Offline vs Hosted Mode:</strong>
                 <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '4px' }}>
                   In <strong>Direct Camera Save</strong> mode, the contact data is baked directly into the QR pattern itself — no internet connection is required to save the contact!
                 </p>
@@ -1192,7 +1240,7 @@ export default function SaaSStudioPage() {
         <div className="modal-backdrop" onClick={() => setShowPrintModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '480px' }}>
             <h3 className="modal-title">Printable Business Card Template</h3>
-            <p className="modal-subtitle">Ready for print shops, badge lanyards, or stickers</p>
+            <p className="modal-subtitle">Ready for print shops, badge lanyards, or networking events</p>
 
             <div className="print-card-paper">
               <div className="print-card-info">
@@ -1204,6 +1252,10 @@ export default function SaaSStudioPage() {
                   <div>📞 {currentProfile.phone || 'Phone'}</div>
                   <div>✉️ {currentProfile.email || 'Email'}</div>
                   {currentProfile.website && <div>🌐 {currentProfile.website.replace('https://', '')}</div>}
+                </div>
+
+                <div className="print-hub-tag">
+                  ⚡️ Powered by AI Founder Hub
                 </div>
               </div>
 

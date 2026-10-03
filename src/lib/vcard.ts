@@ -132,7 +132,7 @@ export function generateVCard(profile: Partial<ContactProfile>): string {
   const notes: string[] = [];
   if (profile.headline) notes.push(profile.headline);
   if (profile.note) notes.push(profile.note);
-  notes.push('Saved via QuickContact QR SaaS');
+  notes.push('Powered by AI Founder Hub (aifounderhub.com)');
   lines.push(`NOTE:${escapeVCardValue(notes.join(' | '))}`);
 
   // Base64 Photo if provided (small avatar)
